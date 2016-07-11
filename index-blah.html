@@ -1,0 +1,58 @@
+<html ng-app="testModule">
+
+<head>
+    <script src="angular.min.js"></script>
+</head>
+
+<body ng-controller="testCtrl">
+   {{sorter}}
+   <input type="text" ng-model="searchBox">
+    <table>
+        <thead>
+        <th><a href="" ng-click="sorterFn('name')">Name</a></th>
+        <th><a href="" ng-click="sorterFn('population')">Population</a></th>
+        <th>Flag</th>
+        <th>Capital</th>
+        <th>GDP</th>
+        </thead>
+        <tbody>
+        	<tr ng-repeat="country in countryDetails | filter:{name:searchBox } | orderBy:sorter:reverse">
+        	<td>{{country.name}}</td>
+        	<td>{{country.population | number}}</td>
+        	<td><img ng-src="{{country.flagURL}}" width="40"></td>
+        	<td>{{country.capital}}</td>
+        	<td>{{country.gdp}}</td>
+        	</tr>
+        </tbody>
+    </table>
+
+
+</body>
+<script>
+var module = angular.module('testModule', []);
+
+module.controller('testCtrl', ['$scope', '$http', function($scope, $http) {
+
+    $http({
+        method: 'GET',
+        url: '/countryDetails.json'
+    }).then(function successCallback(response) {
+
+        $scope.countryDetails = response.data;
+        $scope.sorter = "name";
+        $scope.reverse = false;
+        $scope.sorterFn = function(sorter) {
+
+        	$scope.sorter = sorter;
+        	$scope.reverse = !$scope.reverse;
+
+        };
+
+    }, function errorCallback(response) {
+
+        console.log(response);
+    });
+}]);
+</script>
+
+</html>
