@@ -1,0 +1,114 @@
+<html ng-app="countryModule">
+<head>
+    <title>Angular.js Example</title>
+    <script src="angular.min.js"></script>
+    <script src="angular-route.min.js"></script>
+    <h2>Welcome to Angular !</h2>
+</head>
+
+<body ng-controller="testCtrl">
+  <div list-items values="users"></div>
+  <json-table json-values="userJson" show-search="false" title="users table"></json-table>
+</body>
+
+<script>
+var countryModule = angular.module('countryModule', ['ngRoute']);
+
+countryModule.controller('testCtrl',function($scope, $timeout){
+
+    $scope.users = ["Bob","Jim","Andy","Bharath","Krishna","admin"];
+
+    $scope.userJson = [{
+        id:1,
+        name:"bharath",
+        designation:"developer"
+    },{
+        id:10,
+        name:"Admin",
+        designation:"server"
+    }];
+
+    $timeout(function(){
+        $scope.userJson.push({id:20,name:"NewUser",designation:"support"})
+    },5000);
+    $scope.countryDetails = [
+  {
+    "name": "China",
+    "population": 1359821000,
+    "flagURL": "//upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg",
+    "capital": "Beijing",
+    "gdp": 12261
+  },
+  {
+    "name": "India",
+    "population": 1205625000,
+    "flagURL": "//upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg",
+    "capital": "New Delhi",
+    "gdp": 4716
+  },
+  {
+    "name": "United States of America",
+    "population": 312247000,
+    "flagURL": "//upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg",
+    "capital": "Washington, D.C.",
+    "gdp": 16244
+  }
+];
+});
+
+
+countryModule.directive('jsonTable',function(){
+
+        return{
+
+            restrict: "E",
+            scope:{
+                jsonValues:"=",
+                title: "@",
+                showSearch:"="
+            },
+            templateUrl: "jsonTable.html",
+            link: function(scope,element,attrs){
+
+                scope.keyArray=[];
+
+                    for(key in scope.jsonValues[0])
+                    {
+                            scope.keyArray.push(key);
+                    }
+
+            }
+        }
+});
+
+
+
+
+
+
+countryModule.directive('listItems',function(){
+
+        return{
+
+            restrict: "A",
+            scope:{
+
+                values:"="
+            },
+            templateUrl:"list.html",
+            controller:"listItemCtrl",
+            link: function(scope,element,attrs,controller){
+
+            }
+        }
+});
+countryModule.controller('listItemCtrl',function($scope){
+
+    $scope.deleteFn = function(index)
+    {
+            $scope.values.splice(index,1);
+    };
+});
+</script>
+
+</html>

@@ -1,0 +1,17 @@
+<h2>{{title}}</h2>
+
+<input type="text" ng-model="searchText" ng-show="showSearch">
+<table>
+    <thead>
+        <th ng-repeat=" key in keyArray">
+            {{key}}
+        </th>
+    </thead>
+    <tbody>
+        <tr ng-repeat="jsonValue in jsonValues | filter:searchText">
+            <td ng-repeat="key in keyArray">
+                {{jsonValue[key]}}
+            </td>
+        </tr>
+    </tbody>
+</table>

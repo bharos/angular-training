@@ -1,5 +1,4 @@
-<html>
-
+<html ng-app="countryModule">
 <head>
     <title>Angular.js Example</title>
     <script src="angular.min.js"></script>
@@ -10,5 +9,73 @@
 <body>
     <div ng-view></div>
 </body>
+<script>
+var countryModule = angular.module('countryModule', ['ngRoute']);
+
+
+
+countryModule.config(function($routeProvider) {
+
+    $routeProvider.when('/', {
+        templateUrl: "country-list.html",
+        controller: "countryListCtrl"
+    }).when('/:countryname', {
+        templateUrl: "country-detail.html",
+        controller: "countryDetailCtrl"
+    }).otherwise({
+        redirectTo: "/"
+    });
+
+});
+
+countryModule.service('countryService', function($http) {
+
+    function getCountries() {
+
+        var promise = $http({
+            method: 'GET',
+            url: 'countryDetails.json',
+            cache: true
+        });
+
+        return promise;
+
+    }
+
+    return {
+        getCountriesJson: getCountries
+    }
+});
+
+countryModule.filter('encodeFilter', function() {
+
+    return window.encodeURI;
+});
+
+countryModule.controller('countryListCtrl', ['$scope', '$http', 
+	'countryService', function($scope, $http, countryService) {
+
+    countryService.getCountriesJson().then(
+        function success(response) {
+            $scope.countries = response.data;
+        }
+    );
+
+}]);
+
+countryModule.controller('countryDetailCtrl', ['$scope', '$http', '$routeParams', 'countryService', function($scope, $http, $routeParams, countryService) {
+
+    countryService.getCountriesJson().then(
+        function success(response) {
+            $scope.country = response.data.filter(function(entry) {
+
+                return entry.name === $routeParams.countryname;
+            })[0];
+
+        });
+
+
+}]);
+</script>
 
 </html>
